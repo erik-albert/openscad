@@ -12,7 +12,7 @@
 // designed to hold standard machined DIP or Wirewrap pins with 1.83mm diameter
 //
 
-dip(14);
+dip(14, cut=false);
 
 
 // pins   - number of pins (e.g., 10, 14, 28)
@@ -22,8 +22,8 @@ dip(14);
 
 module dip(pins, pitch = 2.54, rs = 7.16, cut = true) {
     h = 3;
-    r1 = 1.9/2/2;  // 1.83 with wiggle room
-    r2 = 1.42/2/2; // 1.35 with wiggle room
+    r1 = 1.9/2;  // 1.83 with wiggle room
+    r2 = 1.42/2; // 1.35 with wiggle room
     
     difference() {
         translate([-pitch/2,-pitch/2,0]) cube([pitch * pins/2, rs + pitch, h]);
