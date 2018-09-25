@@ -12,7 +12,7 @@
 // designed to hold standard machined DIP or Wirewrap pins with 1.83mm diameter
 //
 
-dip(16);
+dip(8);
 
 
 // pins   - number of pins (e.g., 10, 14, 28)
