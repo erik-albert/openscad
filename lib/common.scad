@@ -1,5 +1,4 @@
 
-
 // rcube(size, r, center)
 // rcube([width,depth,height], r, center)
 
@@ -37,6 +36,19 @@ module rcube(dims_or_size, r, center = false) {
                 }
             }
         }
+    }
+}
+
+// h  - height
+// id - inner diameter
+// od - outer diameter
+// d  - depth of hole
+
+module post(h, od, id, d = undef) {
+    depth = (d == undef) ? h : d;
+    difference() {
+        cylinder(h, r=od/2);
+        translate([0,0,h - depth]) cylinder(h, r=id/2);
     }
 }
 
