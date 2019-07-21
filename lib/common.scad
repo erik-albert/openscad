@@ -1,11 +1,11 @@
 
+
 // rcube(size, r, center)
 // rcube([width,depth,height], r, center)
 
 module rcube(dims_or_size, r, center = false) {
     dims = (dims_or_size[0] == undef) ? [dims_or_size, dims_or_size, dims_or_size] : dims_or_size;
-    echo(dims);
-    translate([-dims.x/2, -dims.y/2, -dims.z/2]) 
+    translate(center ? [-dims.x/2, -dims.y/2, -dims.z/2] : [0,0,0]) 
     union() {
         // cubes in x,y,z directions for the middle
         translate([r,r,0]) cube([dims.x - 2*r, dims.y - 2*r, dims.z]); 
@@ -13,15 +13,15 @@ module rcube(dims_or_size, r, center = false) {
         translate([0,r,r]) cube([dims.x, dims.y - 2*r, dims.z - 2*r]);
         
         // cylinders for the vertices
-        translate([r,r,r]) cylinder(dims.x - 2*r, r = r);
-        translate([dims.x-r,r,r]) cylinder(dims.x - 2*r, r = r);
-        translate([r,dims.y-r,r]) cylinder(dims.x - 2*r, r = r);
-        translate([dims.x-r,dims.y-r,r]) cylinder(dims.x - 2*r, r = r);
+        translate([r,r,r]) cylinder(dims.z - 2*r, r = r);
+        translate([dims.x-r,r,r]) cylinder(dims.z - 2*r, r = r);
+        translate([r,dims.y-r,r]) cylinder(dims.z - 2*r, r = r);
+        translate([dims.x-r,dims.y-r,r]) cylinder(dims.z - 2*r, r = r);
         
-        translate([r,r,r]) rotate([-90,0,0]) cylinder(dims.x - 2*r, r = r);
-        translate([dims.x-r,r,r]) rotate([-90,0,0]) cylinder(dims.x - 2*r, r = r);
-        translate([r,r,dims.z-r]) rotate([-90,0,0]) cylinder(dims.x - 2*r, r = r);
-        translate([dims.x-r,r,dims.z-r]) rotate([-90,0,0]) cylinder(dims.x - 2*r, r = r);
+        translate([r,r,r]) rotate([-90,0,0]) cylinder(dims.y - 2*r, r = r);
+        translate([dims.x-r,r,r]) rotate([-90,0,0]) cylinder(dims.y - 2*r, r = r);
+        translate([r,r,dims.z-r]) rotate([-90,0,0]) cylinder(dims.y - 2*r, r = r);
+        translate([dims.x-r,r,dims.z-r]) rotate([-90,0,0]) cylinder(dims.y - 2*r, r = r);
         
         translate([r,r,r]) rotate([0,90,0]) cylinder(dims.x - 2*r, r = r);
         translate([r,r,dims.z-r]) rotate([0,90,0]) cylinder(dims.x - 2*r, r = r);
@@ -39,6 +39,23 @@ module rcube(dims_or_size, r, center = false) {
     }
 }
 
+module rzcube(dims_or_size, r, center = false) {
+    dims = (dims_or_size[0] == undef) ? [dims_or_size, dims_or_size, dims_or_size] : dims_or_size;
+    translate(center ? [-dims.x/2, -dims.y/2, -dims.z/2] : [0,0,0]) 
+    union() {
+        // cubes in x,y,z directions for the middle
+        translate([r,r,0]) cube([dims.x - 2*r, dims.y - 2*r, dims.z]); 
+        translate([r,0,0]) cube([dims.x - 2*r, dims.y, dims.z]);
+        translate([0,r,0]) cube([dims.x, dims.y - 2*r, dims.z]);
+        
+        // cylinders for the vertices
+        translate([r,r,0]) cylinder(dims.z, r = r);
+        translate([dims.x-r,r,0]) cylinder(dims.z, r = r);
+        translate([r,dims.y-r,0]) cylinder(dims.z, r = r);
+        translate([dims.x-r,dims.y-r,0]) cylinder(dims.z, r = r);
+    }
+}
+
 // h  - height
 // id - inner diameter
 // od - outer diameter
@@ -48,8 +65,12 @@ module post(h, od, id, d = undef) {
     depth = (d == undef) ? h : d;
     difference() {
         cylinder(h, r=od/2);
-        translate([0,0,h - depth]) cylinder(h, r=id/2);
+        if (id > 0) {
+            translate([0,0,h - depth]) cylinder(h, r=id/2);
+        }
     }
 }
+
+
 
 
