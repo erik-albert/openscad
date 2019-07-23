@@ -1,7 +1,13 @@
+// 
+// This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+// https://creativecommons.org/licenses/by-sa/4.0/
+//
 
 
 // rcube(size, r, center)
 // rcube([width,depth,height], r, center)
+// 
+// cube with rounded corners
 
 module rcube(dims_or_size, r, center = false) {
     dims = (dims_or_size[0] == undef) ? [dims_or_size, dims_or_size, dims_or_size] : dims_or_size;
@@ -39,6 +45,12 @@ module rcube(dims_or_size, r, center = false) {
     }
 }
 
+
+// rzcube(size, r, center)
+// rzcube([width,depth,height], r, center)
+// 
+// cube with rounded corners only on the z-axis (top and bottom are flat)
+
 module rzcube(dims_or_size, r, center = false) {
     dims = (dims_or_size[0] == undef) ? [dims_or_size, dims_or_size, dims_or_size] : dims_or_size;
     translate(center ? [-dims.x/2, -dims.y/2, -dims.z/2] : [0,0,0]) 
@@ -56,12 +68,15 @@ module rzcube(dims_or_size, r, center = false) {
     }
 }
 
+
 // h  - height
 // id - inner diameter
 // od - outer diameter
 // d  - depth of hole
+//
+// post with optional inner opening (e.g., for a screw)
 
-module post(h, od, id, d = undef) {
+module post(h, od, id = 0, d = undef) {
     depth = (d == undef) ? h : d;
     difference() {
         cylinder(h, r=od/2);

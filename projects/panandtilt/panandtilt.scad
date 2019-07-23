@@ -1,8 +1,16 @@
 //
 // pan and tilt esp-32 camera
+// 
+// pan and tilt:
+// https://www.adafruit.com/product/1967
+// https://www.adafruit.com/product/1968
+// 
+// AI-Thinker ESP32-CAM
+// (e.g.,) https://www.banggood.com/Geekcreit-ESP32-CAM-WiFi-Bluetooth-Camera-Module-Development-Board-ESP32-p-1443851.html
+// 
+// This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+// https://creativecommons.org/licenses/by-sa/4.0/
 //
-//
-
 
 include <../../lib/common.scad>
 
