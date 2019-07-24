@@ -31,6 +31,8 @@ camera_pos = 13;
 // camera opening size
 camera_radius = 4;
 
+micro_usb = false;
+
 translate([-10, wall, 0]) rotate([0,0,90]) mount();
 //translate([45,0,0]) top();
 //bottom();
@@ -121,21 +123,27 @@ module mount() {
             clips();
             
             // sd connection base
-            translate([29.85-wall-10,29/2-7]) cube([10,14,5]);
-            translate([29.85-wall-7,29/2-4.4,wall]) cylinder(5.5,r=1.35);
-            translate([29.85-wall-7,29/2+4.4,wall]) cylinder(5.5,r=1.35);
+            if (micro_usb) {
+                translate([29.85-wall-10,29/2-7]) cube([10,14,5]);
+                translate([29.85-wall-7,29/2-4.4,wall]) cylinder(5.5,r=1.35);
+                translate([29.85-wall-7,29/2+4.4,wall]) cylinder(5.5,r=1.35);
+            }
             
             // servo connector mount
             translate([wall+7.5,wall,wall]) cube([2,5,10]);
             translate([wall+7.5+2+1.25,wall,wall]) cube([2,5,10]);
-
             translate([wall+7.5,29-5-wall,wall]) cube([2,5,10]);
             translate([wall+7.5+2+1.25,29-5-wall,wall]) cube([2,5,10]);
         }
         
-        // sd connector opening              
-        translate([29.85-2*wall-1,29/2-12.74/2,5]) cube([1.5+wall,12.74,5]);
-        translate([29.85-2*wall-1,29/2-8.5/2,5]) cube([2+2*wall,8.5,5]);
+        // sd connector opening
+        if (micro_usb) {
+            translate([29.85-2*wall-1,29/2-12.74/2,5]) cube([1.5+wall,12.74,5]);
+            translate([29.85-2*wall-1,29/2-8.5/2,5]) cube([2+2*wall,8.5,5]);
+        } else {
+            // wire opening bottom
+            translate([27,22,6]) rotate([0,90,0]) cylinder(4, r=3);
+        }
     }
 }
 
