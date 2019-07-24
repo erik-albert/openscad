@@ -6,10 +6,11 @@
 // https://www.adafruit.com/product/1968
 // 
 // AI-Thinker ESP32-CAM
-// (e.g.,) https://www.banggood.com/Geekcreit-ESP32-CAM-WiFi-Bluetooth-Camera-Module-Development-Board-ESP32-p-1443851.html
+// (e.g.,) https://www.banggood.com/Geekcreit-ESP32-CAM-WiFi-bluetooth-Camera-Module-Development-Board-ESP32-With-Camera-Module-OV2640-p-1394679.html
 // 
+//
 // This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
-// https://creativecommons.org/licenses/by-sa/4.0/
+// http://creativecommons.org/licenses/by-sa/4.0/
 //
 
 include <../../lib/common.scad>
@@ -25,10 +26,14 @@ module_height = 40 + wall*2 + 1;
 module_thick = 1.2;
 // height the module sits off of the base (accounts for esp32 package)
 module_seat = 4.5;
+// camera position from top
+camera_pos = 13;
+// camera opening size
+camera_radius = 4;
 
 translate([-10, wall, 0]) rotate([0,0,90]) mount();
-translate([45,0,0]) top();
-bottom();
+//translate([45,0,0]) top();
+//bottom();
 
 module top() {
     height = wall + 5;
@@ -45,7 +50,7 @@ module top() {
             translate([module_width/2-10,-1,wall+2]) cube([20,8,10]);
             
             // lens cutout
-            translate([module_width/2,13,-1]) cylinder(10,r=4);
+            translate([module_width/2,camera_pos,-1]) cylinder(10,r=camera_radius);
         }
         // side tabs
         difference() {
@@ -113,17 +118,30 @@ module mount() {
                                
                 servo();
             }
-
             clips();
+            
+            // sd connection base
+            translate([29.85-wall-10,29/2-7]) cube([10,14,5]);
+            translate([29.85-wall-7,29/2-4.4,wall]) cylinder(5.5,r=1.35);
+            translate([29.85-wall-7,29/2+4.4,wall]) cylinder(5.5,r=1.35);
+            
+            // servo connector mount
+            translate([wall+7.5,wall,wall]) cube([2,5,10]);
+            translate([wall+7.5+2+1.25,wall,wall]) cube([2,5,10]);
+
+            translate([wall+7.5,29-5-wall,wall]) cube([2,5,10]);
+            translate([wall+7.5+2+1.25,29-5-wall,wall]) cube([2,5,10]);
         }
-        // wire opening bottom
-        translate([27,22,6]) rotate([0,90,0]) cylinder(4, r=3);
+        
+        // sd connector opening              
+        translate([29.85-2*wall-1,29/2-12.74/2,5]) cube([1.5+wall,12.74,5]);
+        translate([29.85-2*wall-1,29/2-8.5/2,5]) cube([2+2*wall,8.5,5]);
     }
 }
 
 module servo() {
     // servo connectors opening
-    translate([-1,29/2-5,4]) cube([4,10,6.5]);
+    translate([-1,29/2-5,6.5]) cube([4,10,6.5]);
 }
 
 module clips() {
