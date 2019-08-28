@@ -26,7 +26,8 @@ swh = 2;
 $fn=16;
 bottom_height = 4;
 
-top();
+translate([25,0,0]) top();
+bottom();
 
 module bottom() {
     difference() {
@@ -51,8 +52,13 @@ module bottom() {
     translate([-wall,4.01,bottom_height-0.1]) cube([wall,bl-7.8,2.1]);
     translate([trinket_width,4.01,bottom_height-0.1]) cube([wall,bl-7.8,2.1]);
 
-    translate([0,4.01,bottom_height+1.5]) rotate([-90,0,0]) cylinder(h=bl-7.8,d=1);
-    translate([trinket_width,4.01,bottom_height+1.5]) rotate([-90,0,0]) cylinder(h=bl-7.8,d=1);
+    difference() {
+        union() {
+            translate([0,4.01,bottom_height+1.5]) rotate([-90,0,0]) cylinder(h=bl-7.8,d=1);
+            translate([trinket_width,4.01,bottom_height+1.5]) rotate([-90,0,0]) cylinder(h=bl-7.8,d=1);
+        }
+        translate([0, 9, bottom_height]) cube([trinket_width,10,4]); 
+    }
 }
 
 module top() {
