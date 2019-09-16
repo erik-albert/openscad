@@ -6,8 +6,16 @@
 // https://www.adafruit.com/product/1968
 // 
 // AI-Thinker ESP32-CAM
-// (e.g.,) https://www.banggood.com/Geekcreit-ESP32-CAM-WiFi-bluetooth-Camera-Module-Development-Board-ESP32-With-Camera-Module-OV2640-p-1394679.html
+// https://www.banggood.com/Geekcreit-ESP32-CAM-WiFi-bluetooth-Camera-Module-Development-Board-ESP32-With-Camera-Module-OV2640-p-1394679.html
 // 
+// Tutorial for ESP32 camera web server:
+// https://randomnerdtutorials.com/esp32-cam-video-streaming-face-recognition-arduino-ide/
+//
+// Tutorial for ESP32 servo control:
+// https://randomnerdtutorials.com/esp32-servo-motor-web-server-arduino-ide/
+//
+// GPIO 2,4,12,13,14,15 (all left side GPIO pins) are connected to the SD card and shouldn't be used for 
+// controlling the servos if you plan to use the SD card functionality. GPIO 0 & 16 should be OK.
 //
 // This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
 // http://creativecommons.org/licenses/by-sa/4.0/
@@ -15,7 +23,7 @@
 
 include <../../lib/common.scad>
 
-$fn=16;
+$fn=20;
 
 // outer wall thickness
 wall=1.8;
@@ -31,11 +39,9 @@ camera_pos = 13;
 // camera opening size
 camera_radius = 4;
 
-micro_usb = false;
-
-translate([-10, wall, 0]) rotate([0,0,90]) mount();
+//translate([-10, wall, 0]) rotate([0,0,90]) mount();
 //translate([45,0,0]) top();
-//bottom();
+bottom();
 
 module top() {
     height = wall + 5;
@@ -106,58 +112,48 @@ module bottom() {
     }
 }
 
-module mount() {
+module mount(height=16) {
+    offset = 5;
     difference() {
         union() {
             difference() {
-                union() {
-                    rcube([29.85,29,16],2);
-                }
-                translate([-1,-1,14]) cube([32,32,20]);
+                rcube([29.85,29,height+6],2);
+                translate([-1,-1,height]) cube([32,32,20]);
                 translate([wall,wall,wall]) rcube([29.85-2*wall,29-2*wall,16],2);
-                translate([7.2,-0.8,10]) cube([15.6,1.7,5]);
-                translate([7.2,29-0.8,10]) cube([15.6,1.7,5]);
-                               
-                servo();
+                translate([7.2,-0.8,10]) cube([15.6,1.7,height+0.1-10]);
+                translate([7.2,29-0.8,10]) cube([15.6,1.7,height+0.1-10]);
             }
-            clips();
+            clips(height);
             
             // sd connection base
-            if (micro_usb) {
-                translate([29.85-wall-10,29/2-7]) cube([10,14,5]);
-                translate([29.85-wall-7,29/2-4.4,wall]) cylinder(5.5,r=1.35);
-                translate([29.85-wall-7,29/2+4.4,wall]) cylinder(5.5,r=1.35);
-            }
-            
+            translate([29.85-wall-10,29/2-offset-7]) cube([10,14,5]);
+            translate([29.85-wall-7,29/2-offset-4.4,wall]) cylinder(6,r=1.45);
+            translate([29.85-wall-7,29/2-offset+4.4,wall]) cylinder(6,r=1.45);
+            translate([29.85-wall-7,29/2-offset-4.4,wall+5]) sphere(r=1.56);
+            translate([29.85-wall-7,29/2-offset+4.4,wall+5]) sphere(r=1.56);
+
             // servo connector mount
-            translate([wall+7.5,wall,wall]) cube([2,5,10]);
-            translate([wall+7.5+2+1.25,wall,wall]) cube([2,5,10]);
-            translate([wall+7.5,29-5-wall,wall]) cube([2,5,10]);
-            translate([wall+7.5+2+1.25,29-5-wall,wall]) cube([2,5,10]);
+            translate([29.85-wall-9-2,29-wall-3,wall]) cube([2,3,10]);
+            translate([29.85-wall-9-2,29-wall-8,wall]) cube([2,8,1]);
+            translate([29.85-wall-9-4-1.55,29-wall-3,wall]) cube([2,3,10]);
+            translate([29.85-wall-9-4-1.55,29-wall-8,wall]) cube([2,8,2]);
         }
         
         // sd connector opening
-        if (micro_usb) {
-            translate([29.85-2*wall-1,29/2-12.74/2,5]) cube([1.5+wall,12.74,5]);
-            translate([29.85-2*wall-1,29/2-8.5/2,5]) cube([2+2*wall,8.5,5]);
-        } else {
-            // wire opening bottom
-            translate([27,22,6]) rotate([0,90,0]) cylinder(4, r=3);
-        }
+        translate([29.85-2*wall-1,29/2-offset-12.74/2,5.1]) cube([1.5+wall,12.74,5]);
+        translate([29.85-2*wall-1,29/2-offset-8.5/2,5.1]) cube([2+2*wall,8.5,5]);
+        
+        // servo connector opening
+        translate([29.85-wall-1,29-wall-10,wall+1.25]) cube([4,6.5,9]);
     }
 }
 
-module servo() {
-    // servo connectors opening
-    translate([-1,29/2-5,6.5]) cube([4,10,6.5]);
-}
+module clips(height) {
+    translate([0,wall+0.2,height-0.5]) cube([wall,29-2*wall-0.4,wall+1.5]);
+    translate([0,wall+0.2,height+wall+0.5]) rotate([-90,0,0]) cylinder(29-2*wall-0.4,r=.5);
 
-module clips() {
-    translate([0,wall+0.2,13.5]) cube([wall,29-2*wall-0.4,wall+1.5]);
-    translate([0,wall+0.2,14+wall+0.5]) rotate([-90,0,0]) cylinder(29-2*wall-0.4,r=.5);
-
-    translate([29.85-wall*1.4,wall+0.2,wall]) cube([wall*1.4,29-2*wall-0.4,15]);
-    translate([29.85,wall+0.2,14+wall+0.5]) rotate([-90,0,0]) cylinder(29-2*wall-0.4,r=.5);
-    translate([wall-0.2,8,wall]) cylinder(15,r=1);
-    translate([wall-0.2,29-8,wall]) cylinder(15,r=1);
+    translate([29.85-wall*1.4,wall+0.2,wall]) cube([wall*1.4,29-2*wall-0.4,height+1]);
+    translate([29.85,wall+0.2,height+wall+0.5]) rotate([-90,0,0]) cylinder(29-2*wall-0.4,r=.5);
+    translate([wall-0.2,8,wall]) cylinder(height+1,r=1);
+    translate([wall-0.2,29-8,wall]) cylinder(height+1,r=1);
 }
